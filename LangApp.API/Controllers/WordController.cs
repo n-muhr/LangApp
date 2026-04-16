@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LangApp.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class WordController : ControllerBase

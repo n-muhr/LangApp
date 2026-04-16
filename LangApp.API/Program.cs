@@ -1,10 +1,10 @@
+using LangApp.API.Services;
+using LangApp.Core.Data;
+using LangApp.Core.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Text;
-using LangApp.Core.Data;
-using LangApp.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +23,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Env.GetEnvironmentVariable("JWT_ISSUER"),
-            ValidAudience = builder.Env.GetEnvironmentVariable("JWT_AUDIENCE"),
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Env.GetEnvironmentVariable("JWT_SECRET") ??
+            ValidIssuer = builder.Configuration["JWT_ISSUER"],
+            ValidAudience = builder.Configuration["JWT_AUDIENCE"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT_SECRET"] ??
 "A_VERY_LONG_SECRET_KEY_FOR_DEV"))
         };
     });
@@ -35,7 +35,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IWordRepositoryService, WordRepositoryService>();
-
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

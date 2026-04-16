@@ -15,9 +15,7 @@ namespace LangApp.API.Services
 
         public async Task<List<Word>> GetAllWordsAsync()
         {
-            return await _context.Words
-                .Include(w => w.ReviewHistories)
-                .ToListAsync();
+            return await _context.Words.ToListAsync();
         }
 
         public async Task<Word> GetWordWithHistoryAsync(Guid wordId)

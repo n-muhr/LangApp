@@ -13,10 +13,10 @@ namespace LangApp.Core.Models
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required]
         [MaxLength(256)]
-        public string SourceText { get; set; }
+        public required string SourceText { get; set; }
         [Required]
         [MaxLength(256)]
-        public string TargetText { get; set; }
+        public required string TargetText { get; set; }
         public ICollection<ReviewHistory> ReviewHistories { get; set; } = new List<ReviewHistory>();
 
     }
