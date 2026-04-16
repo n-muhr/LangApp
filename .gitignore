@@ -1,48 +1,26 @@
-# =============================================
-  # Visual Studio / Rider Build Artifacts
-  # =============================================
-  *.user
-  *.suo
-  *.vs*
-  .vs/
-  *.bak
-  *.bak.bak
+*.user
+*.suo
+*.vs*
+.vs/
+*.bak
+*.bak.bak
 
-  # =============================================
-  # General Build & Dependency Folders
-  # =============================================
-  # Output directories containing compiled code and artifacts
-  **/bin/
-  **/obj/
+**/bin/
+**/obj/
 
-  # NuGet package caches and temporary files
-  **/packages/
-  **.nuget/
+**/packages/
+**.nuget/
 
-  # =============================================
-  # Local Configuration & Secrets
-  # =============================================
-  # NEVER commit local connection strings, API keys, or user credentials!
-  .env
-  *.config
-  App.settings.Development.json # Local development specific settings
-  secrets.json # If using user secrets
+.env
+*.config
+App.settings.Development.json
+secrets.json
 
-  # =============================================
-  # Docker and Container Files (Optional but good practice)
-  # =============================================
-  # If you generate volumes or local DB dumps, ignore them
-  ./docker-compose.yml.local
-  ./db_dump/
+./docker-compose.yml.local
+./db_dump/
 
-  # =============================================
-  # OS / System Files
-  # =============================================
-  .DS_Store
-  Thumbs.db
 
-  # =============================================
-  # Specific to Blazor/Client (if it generates local cache)
-  # =============================================
-  # If the client has any temporary cache folders
-  **/wwwroot/Cache/
+.DS_Store
+Thumbs.db
+
+**/wwwroot/Cache/
