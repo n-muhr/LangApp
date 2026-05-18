@@ -1,5 +1,4 @@
 ﻿@page "/"
-@inject NavigationManager NavManager
 
 <PageTitle>LangApp - Home</PageTitle>
 
@@ -12,28 +11,16 @@
         <div class="card shadow-sm">
             <h3>Již máte účet?</h3>
             <p>Přihlaste se a pokračujte.</p>
-            <button class="btn btn-primary" @onclick="GoToLogin">Přihlásit se</button>
+            <a class="btn btn-primary" href="login">Přihlásit se</a>
         </div>
 
         <div class="card shadow-sm">
             <h3>Nový uživatel?</h3>
             <p>Vytvořte si účet.</p>
-            <button class="btn btn-outline-success" @onclick="GoToRegister">Registrovat se</button>
+            <a class="btn btn-outline-success" href="register">Registrovat se</a>
         </div>
     </div>
 </div>
-
-@code {
-    private void GoToLogin()
-    {
-        NavManager.NavigateTo("login");
-    }
-
-    private void GoToRegister()
-    {
-        NavManager.NavigateTo("register");
-    }
-}
 
 <style>
     .home-container {

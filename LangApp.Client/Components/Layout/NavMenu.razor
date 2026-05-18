@@ -1,4 +1,8 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@rendermode InteractiveServer
+@inject AuthStateService AuthState
+@inject JwtAuthStateProvider AuthStateProvider
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">LangApp.Client</a>
     </div>
@@ -14,27 +18,42 @@
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="login">
-                <span class="bi bi-person-lock" aria-hidden="true"></span> Přihlášení
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="register">
-                <span class="bi bi-person-plus" aria-hidden="true"></span> Registrace
-            </NavLink>
-        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3 nav-user">
+                    <span class="nav-link text-truncate" title="@AuthState.Email">@GetDisplayEmail()</span>
+                </div>
+                <div class="nav-item px-3">
+                    <button type="button" class="nav-link btn btn-link text-start w-100" @onclick="LogoutAsync">
+                        <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Odhlásit se
+                    </button>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="login">
+                        <span class="bi bi-person-lock" aria-hidden="true"></span> Přihlášení
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="register">
+                        <span class="bi bi-person-plus" aria-hidden="true"></span> Registrace
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
     </nav>
 </div>
 
+@code {
+    private string GetDisplayEmail()
+    {
+        var email = AuthState.Email ?? string.Empty;
+        return email.Length > 24 ? email[..21] + "..." : email;
+    }
+
+    private async Task LogoutAsync()
+    {
+        await AuthStateProvider.SignOutAsync();
+    }
+}

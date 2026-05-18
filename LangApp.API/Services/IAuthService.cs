@@ -1,10 +1,9 @@
-﻿using LangApp.Core.Models;
+﻿using LangApp.API.DTOs.Auth;
 
-namespace LangApp.API.Services
+namespace LangApp.API.Services;
+
+public interface IAuthService
 {
-    public interface IAuthService
-    {
-        Task<User> RegisterUser(string email, string password);
-        Task<string> Login(string email, string password);
-    }
+    Task<RegisterResponse> RegisterUser(string email, string password);
+    Task<LoginResponse> Login(string email, string password);
 }

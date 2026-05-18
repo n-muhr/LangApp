@@ -1,0 +1,88 @@
+@page "/register"
+@rendermode InteractiveServer
+@inject IAuthApiClient AuthApi
+@inject NavigationManager NavManager
+
+<PageTitle>Registrace - LangApp</PageTitle>
+
+<div class="auth-container">
+    <div class="card shadow-sm auth-card">
+        <h1>Registrace</h1>
+
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger">@_errorMessage</div>
+        }
+
+        <EditForm Model="_model" OnValidSubmit="HandleRegisterAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label" for="email">E-mail</label>
+                <InputText id="email" class="form-control" @bind-Value="_model.Email" />
+                <ValidationMessage For="() => _model.Email" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="password">Heslo</label>
+                <InputText id="password" type="password" class="form-control" @bind-Value="_model.Password" />
+                <ValidationMessage For="() => _model.Password" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="confirmPassword">Potvrzení hesla</label>
+                <InputText id="confirmPassword" type="password" class="form-control" @bind-Value="_model.ConfirmPassword" />
+                <ValidationMessage For="() => _model.ConfirmPassword" />
+            </div>
+
+            <button type="submit" class="btn btn-success w-100" disabled="@_isSubmitting">
+                @(_isSubmitting ? "Registrace..." : "Registrovat se")
+            </button>
+        </EditForm>
+
+        <p class="auth-footer">
+            Již máte účet? <a href="login">Přihlásit se</a>
+        </p>
+    </div>
+</div>
+
+@code {
+    private readonly RegisterRequest _model = new();
+    private string? _errorMessage;
+    private bool _isSubmitting;
+
+    private async Task HandleRegisterAsync()
+    {
+        _isSubmitting = true;
+        _errorMessage = null;
+
+        var result = await AuthApi.RegisterAsync(_model);
+
+        if (result.IsSuccess)
+        {
+            NavManager.NavigateTo("/login?registered=true");
+            return;
+        }
+
+        _errorMessage = result.Message ?? "Registrace se nezdařila.";
+        _isSubmitting = false;
+    }
+}
+
+<style>
+    .auth-container {
+        max-width: 420px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+    .auth-card {
+        padding: 24px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+    }
+    .auth-footer {
+        margin-top: 16px;
+        text-align: center;
+    }
+</style>

@@ -1,0 +1,99 @@
+@page "/login"
+@rendermode InteractiveServer
+@inject IAuthApiClient AuthApi
+@inject JwtAuthStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+
+<PageTitle>Přihlášení - LangApp</PageTitle>
+
+<div class="auth-container">
+    <div class="card shadow-sm auth-card">
+        <h1>Přihlášení</h1>
+
+        @if (_showRegisteredMessage)
+        {
+            <div class="alert alert-success">Registrace proběhla úspěšně. Přihlaste se.</div>
+        }
+
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+            <div class="alert alert-danger">@_errorMessage</div>
+        }
+
+        <EditForm Model="_model" OnValidSubmit="HandleLoginAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-3">
+                <label class="form-label" for="email">E-mail</label>
+                <InputText id="email" class="form-control" @bind-Value="_model.Email" />
+                <ValidationMessage For="() => _model.Email" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="password">Heslo</label>
+                <InputText id="password" type="password" class="form-control" @bind-Value="_model.Password" />
+                <ValidationMessage For="() => _model.Password" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" disabled="@_isSubmitting">
+                @(_isSubmitting ? "Přihlašování..." : "Přihlásit se")
+            </button>
+        </EditForm>
+
+        <p class="auth-footer">
+            Nemáte účet? <a href="register">Registrovat se</a>
+        </p>
+    </div>
+</div>
+
+@code {
+    private readonly LoginRequest _model = new();
+    private string? _errorMessage;
+    private bool _isSubmitting;
+    private bool _showRegisteredMessage;
+
+    [SupplyParameterFromQuery(Name = "registered")]
+    public bool? Registered { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _showRegisteredMessage = Registered == true;
+    }
+
+    private async Task HandleLoginAsync()
+    {
+        _isSubmitting = true;
+        _errorMessage = null;
+        _showRegisteredMessage = false;
+
+        var result = await AuthApi.LoginAsync(_model);
+
+        if (result.IsSuccess && result.Data is not null)
+        {
+            await AuthStateProvider.SignInAsync(result.Data.Token, result.Data.Email);
+            NavManager.NavigateTo("/");
+            return;
+        }
+
+        _errorMessage = result.Message ?? "Neplatný e-mail nebo heslo.";
+        _isSubmitting = false;
+    }
+}
+
+<style>
+    .auth-container {
+        max-width: 420px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+    .auth-card {
+        padding: 24px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+    }
+    .auth-footer {
+        margin-top: 16px;
+        text-align: center;
+    }
+</style>
